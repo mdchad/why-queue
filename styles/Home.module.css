@@ -5,6 +5,11 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100vw;
+}
+
+.header {
+  margin-top: 5em;
 }
 
 .main {
@@ -14,6 +19,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.label {
+  margin-bottom: 1.5em
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
 }
 
 .footer {
