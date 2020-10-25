@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
+require('dotenv').config()
 const accountSid = 'AC46d64dba6bf54d2d5e95b2498704ba57';
-const authToken = 'ae6e50a237ec59ec2b159b2a9471cc44';
+const authToken = process.env.TWILIO_KEY;
 const client = require('twilio')(accountSid, authToken);
 
 export default (req, res) => {
