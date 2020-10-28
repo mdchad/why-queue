@@ -13,17 +13,17 @@ export default (req, res) => {
     const parsed = JSON.parse(req.body);
     console.log(parsed)
     // client.messages
-    //     .create({body: 'Abang munir. I love you so much. Jom tido sayang!', from: 'Sofia', to: parsed.data})
+    //     .create({body: 'You are number #2 on the waiting list', from: parsed.company, to: parsed.data})
     //     .then(message => console.log(message.sid))
     //     .catch(e => console.log(e));
-    client.calls
-        .create({
-          twiml: '<Response><Say>Hello there General Kenbobi. We meet again!</Say></Response>',
-          to: parsed.data,
-          from: '+19252557392'
-        })
-        .then(call => console.log(call.sid))
-        .catch(e => console.log(e));
+    // client.calls
+    //     .create({
+    //       twiml: '<Response><Say>Hello there General Kenbobi. We meet again!</Say></Response>',
+    //       to: parsed.data,
+    //       from: '+19252557392'
+    //     })
+    //     .then(call => console.log(call.sid))
+    //     .catch(e => console.log(e));
   } else {
     // Handle any other HTTP method
   }

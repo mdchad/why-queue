@@ -1,14 +1,16 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import TextField from "@material-ui/core/TextField";
 import {useState} from "react";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/material.css';
+import Button from "@material-ui/core/Button";
+import { useRouter } from 'next/router'
 
 export default function Home() {
   const [num, setNum] = useState(null)
 
   function handleChange(e) {
-    setNum(e.target.value)
+    setNum(e)
   }
 
   async function handleSubmit(e) {
@@ -18,7 +20,7 @@ export default function Home() {
     try {
       const res = await fetch("/api/hello", {
         method: "POST",
-        body: JSON.stringify({ data: '+65' + num }),
+        body: JSON.stringify({ data: num, company: 'Refuel', timestamp: new Date() }),
       });
       setNum('')
     } catch (e) {
@@ -33,29 +35,45 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500;600&display=swap" rel="stylesheet" />
       </Head>
 
       <header className={styles.header}>
-        <h1>Skip the queue. We will notify you ⏰</h1>
+        <h1>Refuel</h1>
       </header>
       <main className={styles.main}>
         <form className={styles.form} onSubmit={handleSubmit}>
-          <label className={styles.label}>Please enter your number to  be on the wait list.</label>
-          <TextField
-              id="outlined-number"
-              label="Number"
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              required={true}
-              value={num}
-              onChange={handleChange}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">🇸🇬 +65</InputAdornment>,
-              }}
+          <label className={styles.label}>Please enter your number to join the queue.</label>
+          <PhoneInput
+            country={'sg'}
+            value={num}
+            onChange={phone => handleChange(phone)}
+            isValid={(value, country) => {
+              if (value.match(/12345/)) {
+                return 'Invalid value: '+value+', '+country.name;
+              } else if (value.match(/1234/)) {
+                return false;
+              } else {
+                return true;
+              }
+            }}
           />
+          <Button type='submit' style={{ marginTop: '16px', backgroundColor: '#0070f3', boxShadow: '0 4px 14px 0 rgba(0,118,255,0.39)', borderRadius: '7px' }} size={'large'} variant="contained" color='primary'>Submit</Button>
+          {/*<TextField*/}
+          {/*    id="outlined-number"*/}
+          {/*    label="Number"*/}
+          {/*    type="number"*/}
+          {/*    InputLabelProps={{*/}
+          {/*      shrink: true,*/}
+          {/*    }}*/}
+          {/*    variant="outlined"*/}
+          {/*    required={true}*/}
+          {/*    value={num}*/}
+          {/*    onChange={handleChange}*/}
+          {/*    InputProps={{*/}
+          {/*      startAdornment: <InputAdornment position="start">🇸🇬 +65</InputAdornment>,*/}
+          {/*    }}*/}
+          {/*/>*/}
         </form>
       </main>
 
@@ -65,8 +83,8 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
+          Powered by
+          <span style={{ fontFamily: 'Inconsolata', fontWeight: 600, marginLeft: '8px', border: '1px solid #000', padding: '4px'}}>{' '}CutQueue</span>
         </a>
       </footer>
     </div>
