@@ -3,19 +3,18 @@ import styles from "../../styles/Home.module.css";
 import PhoneInput from "react-phone-input-2";
 import Button from "@material-ui/core/Button";
 import "react-phone-input-2/lib/material.css";
-import { useRouter } from "next/router";
 import Head from "next/head";
 import TextField from "@material-ui/core/TextField";
+import * as changeCase from "change-case";
 
-export default function Booking() {
+export default function Booking({ company }) {
   const [num, setNum] = useState("");
   const [dialCode, setDialCode] = useState("");
   const [numberOfPeople, setNumberOfPeople] = useState('');
   const [error, setError] = useState(false)
-  const router = useRouter();
-  let { company } = router.query;
+  let { name: companyName } = company;
   if (company) {
-    company = company.charAt(0).toUpperCase() + company.slice(1);
+    companyName = changeCase.capitalCase(companyName)
   }
 
   function handlePeopleInput(value) {
@@ -29,7 +28,6 @@ export default function Booking() {
 
   async function handleBlur() {
     const { parsePhoneNumber } = await import('libphonenumber-js/max')
-    console.log(parsePhoneNumber)
     if (num) {
       const phoneNumber = parsePhoneNumber('+' + num)
       if (phoneNumber.isValid() === false) {
@@ -76,7 +74,7 @@ export default function Booking() {
       </Head>
 
       <header className={styles.header}>
-        <h1>{company}</h1>
+        <h1>{companyName}</h1>
       </header>
       <main className={styles.main}>
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -152,3 +150,42 @@ export default function Booking() {
     </div>
   );
 }
+
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  // const res = await fetch('api/company/')
+  // const posts = await res.json()
+
+  // Get the paths we want to pre-render based on posts
+  // const paths = posts.map((post) => ({
+  //   params: { name: post.id },
+  // }))
+
+  // We'll pre-render only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return {
+    paths: [{
+      params: {
+        company: 'wak-jof'
+      }
+    }],
+    fallback: false
+  }
+}
+
+export async function getStaticProps(ctx) {
+  let companyName = ctx.params.company
+  // Call an external API endpoint to get posts.
+  // You can use any data fetching library
+  const res = await fetch(`${process.env.BASE_URL}/api/company/${companyName}`)
+  const { result: company } = await res.json()
+  //
+  // By returning { props: posts }, the Blog component
+  // will receive `posts` as a prop at build time
+  return {
+    props: {
+      company
+    },
+  }
+}
+

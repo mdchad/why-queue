@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-require('dotenv').config()
-const accountSid = 'AC46d64dba6bf54d2d5e95b2498704ba57';
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_KEY;
 const client = require('twilio')(accountSid, authToken);
 import { connect } from "../../../utils/dbConnect";
@@ -8,7 +7,6 @@ import { connect } from "../../../utils/dbConnect";
 export default async (req, res) => {
   try {
     const db = await connect()
-    console.log(db)
     const parsed = JSON.parse(req.body);
     console.log(parsed)
 

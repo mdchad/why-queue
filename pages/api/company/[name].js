@@ -1,27 +1,26 @@
-import {connect} from "../../../utils/dbConnect"
-import * as changeCase from "change-case"
 import {runMiddleware} from "../../../utils/cors";
+import {connect} from "../../../utils/dbConnect";
+import * as changeCase from "change-case";
 
 export default async (req, res) => {
   try {
     await runMiddleware(req, res)
     const { db } = await connect()
-    let { name, country } = req.body
+    let {
+      query: { name },
+    } = req
     name = changeCase.snakeCase(name)
 
-    const result = await db.collection("company").insertOne({
-      name,
-      country,
-      queue: [],
-      createdAt: new Date()
+    const result = await db.collection("company").findOne({
+      name
     })
-    res.status(201);
+    res.status(200);
     res.setHeader('Access-Control-Allow-Origin', '*')
     res.setHeader('Content-Type', 'application/json')
     res.json({ result })
   } catch (e) {
     res.status(500);
     console.log(e)
-    res.json({ error: "Unable to insert queue... sorry" });
+    res.json({ error: "Unable to find company... sorry" });
   }
 }
