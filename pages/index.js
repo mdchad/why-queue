@@ -7,7 +7,7 @@ import Button from "@material-ui/core/Button";
 
 export default function Home() {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Skip the Q</title>
         <link rel="icon" href="/favicon.ico" />
@@ -16,6 +16,9 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500;600&display=swap" rel="stylesheet" />
       </Head>
 
+      <header>
+        <h1>Welcome to CutQueue</h1>
+      </header>
       {/*<header className={styles.header}>*/}
       {/*  <h1>Refuel</h1>*/}
       {/*</header>*/}

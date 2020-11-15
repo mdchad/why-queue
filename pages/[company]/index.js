@@ -5,32 +5,52 @@ import Button from "@material-ui/core/Button";
 import "react-phone-input-2/lib/material.css";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import TextField from "@material-ui/core/TextField";
 
 export default function Booking() {
   const [num, setNum] = useState("");
+  const [dialCode, setDialCode] = useState("");
+  const [numberOfPeople, setNumberOfPeople] = useState('');
+  const [error, setError] = useState(false)
   const router = useRouter();
   let { company } = router.query;
   if (company) {
     company = company.charAt(0).toUpperCase() + company.slice(1);
   }
 
-  function handleChange(value) {
+  function handlePeopleInput(value) {
+    setNumberOfPeople(value)
+  }
+
+  function handleChange(value, country) {
+    setDialCode(country.dialCode)
     setNum(value);
+  }
+
+  async function handleBlur() {
+    const { parsePhoneNumber } = await import('libphonenumber-js/max')
+    console.log(parsePhoneNumber)
+    if (num) {
+      const phoneNumber = parsePhoneNumber('+' + num)
+      if (phoneNumber.isValid() === false) {
+        setError(true)
+      }
+    }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      const res = await fetch("/api/hello", {
+      const res = await fetch("/api/queue/create", {
         method: "POST",
         body: JSON.stringify({
-          data: "+" + num,
+          phoneNumber: "+" + num,
           company,
+          numberOfPeople: parseInt(numberOfPeople),
           timestamp: new Date(),
         }),
       });
-      // TODO: Check for dial code to exclude
-      setNum(num.substring(0, 2));
+      setNum(num.substring(0, dialCode.length));
     } catch (e) {
       console.error("error");
     }
@@ -66,23 +86,38 @@ export default function Booking() {
           <PhoneInput
             country={"sg"}
             value={num}
-            onChange={(phone) => handleChange(phone)}
+            onChange={(phone, country, e, formattedValue) => handleChange(phone, country)}
+            onBlur={handleBlur}
             isValid={(value, country) => {
-              if (value.match(/12345/)) {
-                return "Invalid value: " + value + ", " + country.name;
-              } else if (value.match(/1234/)) {
-                return false;
+              if (error) {
+                return "Invalid phone number";
               } else {
-                return true;
+                return true
               }
             }}
           />
+          <label className={styles.label}>
+            Please indicate how many people.
+          </label>
+          <TextField
+              id="outlined-number"
+              label="Pax"
+              type="number"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={numberOfPeople}
+              onChange={e => handlePeopleInput(e.target.value)}
+              variant="outlined"
+          />
           <Button
             type="submit"
+            disabled={!num}
             style={{
+              color: !num && "white",
               marginTop: "16px",
-              backgroundColor: "#0070f3",
-              boxShadow: "0 4px 14px 0 rgba(0,118,255,0.39)",
+              backgroundColor: !num ? "#cacaca" : "#0070f3",
+              boxShadow: `0 4px 14px 0 ${!num ? "rgba(202, 202, 202, 0.5)" :  "rgba(0,118,255,0.39)"}`,
               borderRadius: "7px",
             }}
             size={"large"}

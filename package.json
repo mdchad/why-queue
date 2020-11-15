@@ -10,6 +10,8 @@
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "dotenv": "^8.2.0",
+    "libphonenumber-js": "^1.9.4",
+    "mongodb": "^3.6.3",
     "next": "9.5.5",
     "prettier": "^2.1.2",
     "react": "17.0.1",
