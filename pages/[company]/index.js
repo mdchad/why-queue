@@ -53,6 +53,7 @@ export default function Booking({ company }) {
       });
       await res.json()
       setNum(num.substring(0, dialCode.length));
+      setNumberOfPeople('');
       setLoading(false)
     } catch (e) {
       console.error("error");

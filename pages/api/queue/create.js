@@ -1,4 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import * as changeCase from "change-case";
+
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_KEY;
 const client = require('twilio')(accountSid, authToken);
@@ -11,7 +13,7 @@ export default async (req, res) => {
     console.log(parsed)
 
     client.messages
-        .create({body: 'You are number #2 on the waiting list for ' + parsed.numberOfPeople + ' people', from: parsed.company.name, to: parsed.phoneNumber})
+        .create({body: 'You are number #2 on the waiting list for ' + parsed.numberOfPeople + ' people', from: changeCase.capitalCase(parsed.company.name), to: parsed.phoneNumber})
         .then(message => {
           console.log(message.sid)
           res.status(201);
