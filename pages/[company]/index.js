@@ -6,12 +6,15 @@ import "react-phone-input-2/lib/material.css";
 import Head from "next/head";
 import TextField from "@material-ui/core/TextField";
 import * as changeCase from "change-case";
+import {connect} from "../../utils/dbConnect";
 
 export default function Booking({ company }) {
+  company = JSON.parse(company)
   const [num, setNum] = useState("");
   const [dialCode, setDialCode] = useState("");
   const [numberOfPeople, setNumberOfPeople] = useState('');
   const [error, setError] = useState(false)
+  const [loading, setLoading] = useState(false)
   let { name: companyName } = company;
   if (company) {
     companyName = changeCase.capitalCase(companyName)
@@ -38,6 +41,7 @@ export default function Booking({ company }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true)
     try {
       const res = await fetch("/api/queue/create", {
         method: "POST",
@@ -49,6 +53,7 @@ export default function Booking({ company }) {
         }),
       });
       setNum(num.substring(0, dialCode.length));
+      setLoading(false)
     } catch (e) {
       console.error("error");
     }
@@ -122,7 +127,7 @@ export default function Booking({ company }) {
             variant="contained"
             color="primary"
           >
-            Submit
+            {loading ? '...Loading' : 'Submit'}
           </Button>
         </form>
       </main>
@@ -174,18 +179,27 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps(ctx) {
-  let companyName = ctx.params.company
+  let name = ctx.params.company
   // Call an external API endpoint to get posts.
   // You can use any data fetching library
-  const res = await fetch(`${process.env.BASE_URL}/api/company/${companyName}`)
-  const { result: company } = await res.json()
+  try {
+    const { db } = await connect()
+    name = changeCase.snakeCase(name)
+    const company = await db.collection("company").findOne({
+      name
+    })
+    if (company) {
+      return {
+        props: {
+          company: JSON.stringify(company)
+        },
+      }
+    }
+  } catch (e) {
+    throw new Error("Internal Server error")
+  }
   //
   // By returning { props: posts }, the Blog component
   // will receive `posts` as a prop at build time
-  return {
-    props: {
-      company
-    },
-  }
 }
 
