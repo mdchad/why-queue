@@ -9,7 +9,6 @@ import * as changeCase from "change-case";
 import {connect} from "../../utils/dbConnect";
 
 export default function Booking({ company }) {
-  company = JSON.parse(company)
   const [num, setNum] = useState("");
   const [dialCode, setDialCode] = useState("");
   const [numberOfPeople, setNumberOfPeople] = useState('');
@@ -52,6 +51,7 @@ export default function Booking({ company }) {
           timestamp: new Date(),
         }),
       });
+      await res.json()
       setNum(num.substring(0, dialCode.length));
       setLoading(false)
     } catch (e) {
@@ -115,12 +115,12 @@ export default function Booking({ company }) {
           />
           <Button
             type="submit"
-            disabled={!num}
+            disabled={!(num && numberOfPeople)}
             style={{
               color: !num && "white",
               marginTop: "16px",
-              backgroundColor: !num ? "#cacaca" : "#0070f3",
-              boxShadow: `0 4px 14px 0 ${!num ? "rgba(202, 202, 202, 0.5)" :  "rgba(0,118,255,0.39)"}`,
+              backgroundColor: !(num && numberOfPeople) ? "#cacaca" : "#0070f3",
+              boxShadow: `0 4px 14px 0 ${!(num && numberOfPeople) ? "rgba(202, 202, 202, 0.5)" :  "rgba(0,118,255,0.39)"}`,
               borderRadius: "7px",
             }}
             size={"large"}
@@ -185,13 +185,15 @@ export async function getStaticProps(ctx) {
   try {
     const { db } = await connect()
     name = changeCase.snakeCase(name)
-    const company = await db.collection("company").findOne({
-      name
-    })
+    const company = await db.collection("company").findOne(
+      { name },
+      { projection: { _id: 0, createdAt: 0 } }
+    )
+    console.log(company)
     if (company) {
       return {
         props: {
-          company: JSON.stringify(company)
+          company
         },
       }
     }

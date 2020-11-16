@@ -11,10 +11,15 @@ export default async (req, res) => {
     console.log(parsed)
 
     client.messages
-        .create({body: 'You are number #2 on the waiting list for ' + parsed.numberOfPeople + ' people', from: parsed.company, to: parsed.phoneNumber})
-        .then(message => console.log(message.sid))
-        .catch(e => console.log(e));
-    res.status(201);
+        .create({body: 'You are number #2 on the waiting list for ' + parsed.numberOfPeople + ' people', from: parsed.company.name, to: parsed.phoneNumber})
+        .then(message => {
+          console.log(message.sid)
+          res.status(201);
+          res.json({ message: 'Successful' });
+        })
+        .catch(e => {
+          throw new Error('Unable to send message')
+        });
   } catch (e) {
     res.status(500);
     res.json({ error: "Unable to insert queue... sorry" });
