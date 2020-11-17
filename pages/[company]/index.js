@@ -9,6 +9,7 @@ import * as changeCase from "change-case";
 import {connect} from "../../utils/dbConnect";
 
 export default function Booking({ company }) {
+  console.log(window.screen.availHeight)
   const [num, setNum] = useState("");
   const [dialCode, setDialCode] = useState("");
   const [numberOfPeople, setNumberOfPeople] = useState('');
@@ -190,7 +191,6 @@ export async function getStaticProps(ctx) {
       { name },
       { projection: { _id: 0, createdAt: 0 } }
     )
-    console.log(company)
     if (company) {
       return {
         props: {
