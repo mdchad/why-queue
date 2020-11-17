@@ -7,6 +7,7 @@ import Head from "next/head";
 import TextField from "@material-ui/core/TextField";
 import * as changeCase from "change-case";
 import {connect} from "../../utils/dbConnect";
+import Div100vh from 'react-div-100vh'
 
 export default function Booking({ company }) {
   const [num, setNum] = useState("");
@@ -61,7 +62,7 @@ export default function Booking({ company }) {
   }
 
   return (
-    <div className={styles.container}>
+    <Div100vh className={styles.container}>
       <Head>
         <title>Skip the Q</title>
         <link rel="icon" href="/favicon.ico" />
@@ -69,6 +70,7 @@ export default function Booking({ company }) {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
         />
+        <link href="https://fonts.googleapis.com/css2?family=Mukta&display=swap" rel="stylesheet" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -153,7 +155,7 @@ export default function Booking({ company }) {
           </span>
         </a>
       </footer>
-    </div>
+    </Div100vh>
   );
 }
 
