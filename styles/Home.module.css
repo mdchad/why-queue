@@ -23,7 +23,7 @@
 }
 
 .label {
-  margin: 1.5em 0
+  margin: 1.5em 0 1em 0;
 }
 
 .form {
@@ -127,6 +127,28 @@
 
 .logo {
   height: 1em;
+}
+
+.subheader {
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+}
+
+.subheaderContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dot {
+  background-color: #72fb72;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  display: block;
+  margin-right: 0.5rem;
+  box-shadow: 0 4px 16px 2px rgb(108 251 98 / 50%);
 }
 
 @media (max-width: 600px) {
