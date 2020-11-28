@@ -1,30 +1,44 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import * as changeCase from "change-case";
+const accountSid = process.env.TWILIO_ACCOUNT_SID
+const authToken = process.env.TWILIO_KEY
+const client = require('twilio')(accountSid, authToken)
+import { connect } from '../../../utils/dbConnect'
 
-const accountSid = process.env.TWILIO_ACCOUNT_SID;
-const authToken = process.env.TWILIO_KEY;
-const client = require('twilio')(accountSid, authToken);
-import { connect } from "../../../utils/dbConnect";
+async function validateHuman(token) {
+  const secret = process.env.RECAPTCHA_SECRET_KEY
+  const response = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`,
+    {
+      method: 'POST',
+    }
+  )
+
+  const data = await response.json()
+  return data.success
+}
 
 export default async (req, res) => {
   try {
     const db = await connect()
-    const parsed = JSON.parse(req.body);
-    console.log(parsed)
+    const { numberOfPeople, phoneNumber, company, token } = JSON.parse(req.body)
 
-    client.messages
-        .create({body: 'You are number #2 on the waiting list for ' + parsed.numberOfPeople + ' people', from: changeCase.capitalCase(parsed.company.name), to: parsed.phoneNumber})
-        .then(message => {
-          console.log(message.sid)
-          res.status(201);
-          res.json({ message: 'Successful' });
-        })
-        .catch(e => {
-          throw new Error('Unable to send message')
-        });
+    const isHuman = validateHuman(token)
+    if (!isHuman) {
+      res.status(400)
+      res.json({ error: 'Google Captcha failed.' })
+    }
+
+    // const response = await client.messages.create({
+    //   body: 'You are number #2 on the waiting list for ' + numberOfPeople + ' people',
+    //   from: changeCase.capitalCase(company.name),
+    //   to: phoneNumber
+    // })
+
+    res.status(201)
+    res.json({ message: 'Successful' })
   } catch (e) {
-    res.status(500);
-    res.json({ error: "Unable to insert queue... sorry" });
+    res.status(500)
+    res.json({ error: 'Unable to insert queue... sorry' })
   }
   // client.calls
   //     .create({
