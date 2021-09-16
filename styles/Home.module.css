@@ -160,3 +160,7 @@
     flex-direction: column;
   }
 }
+
+.wrapper {
+  font-family: 'Mukta';
+}

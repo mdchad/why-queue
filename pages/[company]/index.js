@@ -11,7 +11,7 @@ import { useState } from 'react'
 export default function Booking({ company }) {
   const [screen, setScreen] = useState('FORM')
 
-  let { name: companyName = null } = company
+  let { name: companyName = null, location } = company
   if (company) {
     companyName = changeCase.capitalCase(companyName)
   }
@@ -58,16 +58,12 @@ export default function Booking({ company }) {
         <h1 style={{ marginBottom: '0.2rem' }}>{companyName}</h1>
         <div className={styles.subheaderContainer}>
           <span className={styles.dot}></span>
-          <p className={styles.subheader}>Bedok</p>
+          <p className={styles.subheader}>{location}</p>
         </div>
       </header>
       {renderScreen()}
       <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="/" rel="noopener noreferrer">
           Powered by
           <span
             style={{
@@ -79,7 +75,7 @@ export default function Booking({ company }) {
             }}
           >
             {' '}
-            FastQueue
+            CutQueue
           </span>
         </a>
       </footer>
@@ -106,6 +102,11 @@ export async function getStaticPaths() {
           company: 'wak-jof',
         },
       },
+      {
+        params: {
+          company: 'al-azhar',
+        },
+      },
     ],
     fallback: false,
   }
@@ -121,6 +122,7 @@ export async function getStaticProps(ctx) {
     const company = await db
       .collection('company')
       .findOne({ name }, { projection: { _id: 0, createdAt: 0 } })
+
     if (company) {
       return {
         props: {
@@ -131,7 +133,4 @@ export async function getStaticProps(ctx) {
   } catch (e) {
     throw new Error('Internal Server error')
   }
-  //
-  // By returning { props: posts }, the Blog component
-  // will receive `posts` as a prop at build time
 }
