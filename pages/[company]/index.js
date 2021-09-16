@@ -33,27 +33,6 @@ export default function Booking({ company }) {
 
   return (
     <Div100vh className={styles.container}>
-      <Head>
-        <title>FastQueue</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Mukta&display=swap"
-          rel="stylesheet"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@500;600&display=swap"
-          rel="stylesheet"
-        />
-      </Head>
-
       <header className={styles.header}>
         <h1 style={{ marginBottom: '0.2rem' }}>{companyName}</h1>
         <div className={styles.subheaderContainer}>
